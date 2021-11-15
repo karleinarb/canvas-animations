@@ -1,3 +1,7 @@
+import LocalTest from '/local.js';
+const test = new LocalTest('test');
+console.log(test);
+
 import Hex from '/projects/HexRows/scene.mjs';
 
 // Get the canvas
