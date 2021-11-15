@@ -104,6 +104,7 @@ export default class Vector2 {
   mag(mag) {
     if(!mag) return Vector2.mag(this);
     this.normalize().multAll(mag);
+    return this;
   }
 
   /**

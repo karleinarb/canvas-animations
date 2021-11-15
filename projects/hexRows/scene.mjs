@@ -1,6 +1,6 @@
 import Scene from "../../scene.mjs";
 import EqualShape from '../../engine/entities/equalsidedShape.js';
-import Walker from "../../engine/entities/walker.js";
+import Walker from "../../engine/entities/snake.js";
 
 class Hex extends Scene {
   constructor(canvas, context, time) {
