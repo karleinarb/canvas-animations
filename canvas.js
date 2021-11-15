@@ -1,4 +1,4 @@
-import Hex from './projects/HexRows/scene.mjs';
+import Hex from '/projects/HexRows/scene.mjs';
 
 // Get the canvas
 let canvas = document.getElementById('canvas');
