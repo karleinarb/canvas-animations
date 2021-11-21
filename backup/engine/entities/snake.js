@@ -1,15 +1,16 @@
-import Point from "../types/point.js";
 import Vector2 from "../types/vector2.js";
+import Partice from '../entities/particle.js';
+import ParticleEmitter from "../particles/particleemitter.js";
 
 export default class Walker {
   constructor(x, y, speed = 10, options = {}) {
     // Options, not implemented
     this.options = options;
-    
+
     // Positioning
     this.x = x;
     this.y = y;
-
+    
     // Speed
     this.speed = speed || 5;
     this.minSpeed = 3;
@@ -28,6 +29,11 @@ export default class Walker {
     this.minAngleChange = 0.00005;
     this.maxAngleChange = 0.10;
     this.beforeCollisionAngleMultiplier = 5;
+
+    // Particles
+    this.maxParticles = 100;
+    this.maxParticlesAddPrFrame = 1;
+    this.particles = [];
 
     // Debug
     this.renderHeadingVector = false;
@@ -94,6 +100,28 @@ export default class Walker {
       this.segments[i].position = lastPosition;
       lastPosition = tmpPos;
     }
+
+    // Add new particles if applicable
+    // if(this.particles.length < this.maxParticles) {
+    //   for(let i = 0; i < this.maxParticlesAddPrFrame; i++) {
+    //     this.particles.push(new Partice(
+    //       new Vector2(head.position.x, head.position.y),
+    //       Vector2.random(-5, 5),
+    //       undefined,
+    //       undefined,
+    //       undefined,
+    //       0.5
+    //     ))
+    //   }
+    // }
+
+    // Update any particles
+    let particleIdsToRemove = [];
+    this.particles.forEach((p) => {
+      p.update();
+      if(p.size === 0) particleIdsToRemove.push(p.id);
+    })
+    this.particles = this.particles.filter((p) => !particleIdsToRemove.includes(p.id));
   }
 
   render(ctx) {
@@ -101,15 +129,17 @@ export default class Walker {
     if(this.renderHeadingVector) {
       let head = this.segments[0];
       ctx.save();
+      ctx.beginPath();
       ctx.strokeStyle = '#FF00FF'
       ctx.moveTo(head.position.x, head.position.y);
       ctx.lineTo(head.heading.x, head.heading.y);
       ctx.stroke();
+      ctx.closePath();
       ctx.restore();
     }
 
     // Render the segments
-    this.segments.forEach((s) => {
+    this.segments.forEach((s, i) => {
       ctx.save();
       ctx.beginPath();
       ctx.fillStyle = "orange"
@@ -117,8 +147,11 @@ export default class Walker {
       ctx.shadowColor = "orange";
       ctx.arc(s.position.x, s.position.y, 10, 0, Math.PI * 2);
       ctx.fill();
+      ctx.closePath();
       ctx.restore();
     })
-    // console.log(this.segments);
+
+    // Render any particles
+    this.particles.forEach((p) => p.render(ctx) )
   }
 }
