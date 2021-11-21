@@ -1,5 +1,4 @@
-import Vector2 from './engine/types/vector2';
-import Hex from './projects/hexRows/scene';
+import Hex from './projects/hexRows/scene.js';
 
 // Get the canvas
 let canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -30,7 +29,7 @@ let time = {
 }
 
 // Choose a scene
-let scene = new Hex(time, canvas, ctx);
+let scene = new Hex(time, ctx);
 let renderId = requestAnimationFrame(update);
 
 function update(currentTime: number) {
@@ -44,14 +43,14 @@ function update(currentTime: number) {
   time.lastTime = currentTime;
 
   // Attempt to update the scene
-  try { if(scene && scene.update) scene.update(scene, time, ctx)}
+  try { if(scene && scene.update) scene.update(scene, ctx)}
   catch(err) { console.error(err); }
   
   render();
 }
 
 function render() {
-  try { if(scene && scene.render) scene.render(ctx)}
+  try { if(scene && scene.render) scene.render(scene, ctx)}
   catch(err) { console.error(err); }
 
   renderId = requestAnimationFrame(update);

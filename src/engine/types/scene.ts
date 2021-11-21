@@ -1,47 +1,45 @@
 /*
   Interfaces
 */
-import Time from './time'
+import Entity from '../entities/_entity.js';
+import Time from './time.js'
 
 class Scene {
   /*
     Type definitions
   */
   time: Time
-  canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D;
-  entities: any
+  entities: Entity[]
 
   /*
     Constructor
   */
   constructor(
     time: Time,
-    canvas: HTMLCanvasElement,
     context: CanvasRenderingContext2D,
   ) {
     this.entities = [];
-    this.canvas = canvas;
     this.context = context;
     this.time = time;
   }
 
   update(
     scene: Scene,
-    time: Time,
     context: CanvasRenderingContext2D
     ) {
-    this.entities.forEach((entry: any) => {
-      try { entry.update(this, this.time, this.canvas, this.context); } catch (err) { console.error(err); }
+    this.entities.forEach((entry: Entity) => {
+      try { entry.update(this, this.context); } catch (err) { console.error(err); }
     })
   }
 
   render(
+    scene: Scene,
     context: CanvasRenderingContext2D
   ) {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    this.entities.forEach((entry: any) => {
-      try { entry.render(context, this.time); } catch (err) { console.error(err); }
+    this.entities.forEach((entry: Entity) => {
+      try { entry.render(this, context); } catch (err) { console.error(err); }
     })
   }
 }

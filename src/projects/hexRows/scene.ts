@@ -1,15 +1,15 @@
-import Scene from '../../engine/types/scene'
-import Veichle from '../../engine/entities/vehicle';
-import Time from '../../engine/types/time';
-import Vector2 from '../../engine/types/vector2';
+import Scene from '../../engine/types/scene.js'
+import Veichle from '../../engine/entities/vehicle.js';
+import Time from '../../engine/types/time.js';
+import Vector2 from '../../engine/types/vector2.js';
+import Particle from '../../engine/particles/particle.js';
 
 export default class Hex extends Scene {
   constructor(
       time: Time,
-      canvas: HTMLCanvasElement,
       context: CanvasRenderingContext2D
     ) {
-    super(time, canvas, context);
+    super(time, context);
 
     const shapeSides = 6;
     const sideAngle = 360 / shapeSides;
@@ -23,8 +23,8 @@ export default class Hex extends Scene {
     let hypotenuse = Math.sqrt(Math.pow(adjecant, adjecant) + Math.pow(opposite, opposite));
 
     // Calculate the necessary rows and columns to fill the screen
-    const rows = Math.ceil(canvas.height / opposite) + 1;
-    const columns = Math.ceil(canvas.width / adjecant) + 1;
+    const rows = Math.ceil(context.canvas.height / opposite) + 1;
+    const columns = Math.ceil(context.canvas.width / adjecant) + 1;
     
     //For each layer of the pattern
     for(let r = 0; r < rows; r++) {
@@ -37,9 +37,44 @@ export default class Hex extends Scene {
         // this.entities.push(new EqualShape(positionX, positionY, shapeWidth, shapeSides));
       }
     }
+    // Create a new vehicle
+    let vehicle = new Veichle(
+      new Vector2(255, 255),
+      new Vector2(0, 0),
+      10,
+      (obj: any) => {
+        obj.segments = [];
+        for(let i = 0; i < 50; i++) {
+          obj.segments.push(new Particle(new Vector2(obj.position.x, obj.position.y), new Vector2(0, 0), undefined, undefined, 10));
+        }
+      }, (obj: any, scene: Scene, ctx: CanvasRenderingContext2D) => {
+        let lastPosition: any = undefined;
+        obj.segments.forEach((s: Particle, i: number) => {
+          let tmpPosition = s.position.copy();
+          if(i === 0) s.position = obj.lastPosition.copy();
+          else {
+            s.position = lastPosition;
+          }
+          lastPosition = tmpPosition;
+        })
+      },
+      (obj: any, scene: Scene, ctx: CanvasRenderingContext2D) => {
+        obj.segments.forEach((s: Particle) => {
+          context.save();
+          context.beginPath();
+          ctx.fillStyle = "orange"
+          ctx.shadowBlur = 25;
+          ctx.shadowColor = "orange";
+          context.arc(s.position.x, s.position.y, s.size, 0, Math.PI * 2);
+          context.fill();
+          context.closePath();
+          context.restore();
+        })
+      }
+    )
 
-    // Add the walker
-    this.entities.unshift(new Veichle(new Vector2(250, 250), new Vector2(0, 0), 100, () => {}));
+    // Add the vehicle
+    this.entities.unshift(vehicle);
 
   }
 }

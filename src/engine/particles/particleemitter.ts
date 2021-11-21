@@ -2,8 +2,8 @@
   Dependencies
 */
 import Vector2 from "../types/vector2.js";
-import { particleStyle } from "./particle";
-import Particle from './particle';
+import { particleStyle } from "./particle.js";
+import Particle from './particle.js';
 
 /*
   Classes
