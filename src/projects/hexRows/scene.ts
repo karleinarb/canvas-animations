@@ -44,7 +44,7 @@ export default class Hex extends Scene {
       10,
       (obj: any) => {
         obj.segments = [];
-        for(let i = 0; i < 50; i++) {
+        for(let i = 0; i < 100; i++) {
           obj.segments.push(new Particle(new Vector2(obj.position.x, obj.position.y), new Vector2(0, 0), undefined, undefined, 10));
         }
       }, (obj: any, scene: Scene, ctx: CanvasRenderingContext2D) => {
